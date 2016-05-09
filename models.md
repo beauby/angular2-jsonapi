@@ -3,33 +3,44 @@
 
 ### Proposition 1
 
+Store configuration/declaration:
 ```typescript
-@JsonApiModel({
-  type: 'posts',
-  endpoint: '/posts',
-  baseUrl: 'http://api.example.com'
+@Injectable()
+@JsonApiDatastoreConfig({
+  baseUrl: 'http://api.example.com',
+  models: {
+    posts: Post,
+    users: User,
+    comments: Comment
+  }
 })
-class Post {
-  @JsonApiAttribute()
+class Datastore extends JsonApiDatastore { }
+```
+
+```typescript
+@JsonApiModelConfig({
+  type: 'posts', // optional
+  endpoint: '/posts', // optional
+  baseUrl: 'http://api.other.com' // optional
+})
+class Post extends JsonApiModel {
+  @Attribute()
   title: string
 
-  @JsonApiAttribute()
+  @Attribute()
   content: string
 
-  @JsonApiAttribute({
-    key: 'published_at'
+  @Attribute({
+    key: 'published_at' // optional
   })
   publishedAt: Date
 
-  @JsonApiRelationship({
-    type: 'HasOne',
-    inverseOf: 'comments'
+  @BelongsTo({
+    inverseOf: 'comments' // optional
   })
   author: User
 
-  @JsonApiRelationship({
-    type: 'HasMany'
-  })
+  @HasMany()
   comments: Array<Comment>
 }
 ```
